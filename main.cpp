@@ -49,7 +49,7 @@ int main()
 
     cin >> choice;
 
-    switch(choice)
+    switch(choice)  // Making the user to choose an option to apply
     {
         case 1:
             emailReg();
@@ -70,7 +70,7 @@ int main()
     }
 }
 
-void createPass()
+void createPass()    // Creating a new password for the registration
 {
     cout<<"Please be aware that there are certain characters allowed in the creation of a password.\n";
     cout<<"Password must contain of 8 characters or more and contains at least one of the following characters: \n";
@@ -147,7 +147,7 @@ void createPass()
     }
 }
 
-void storeInfo()
+void storeInfo()    // Storing the user's info. in the file
 {
     fstream userFile;
     userFile.open("userdata.txt",ios::in | ios::out | ios::app);
@@ -158,7 +158,7 @@ void storeInfo()
     userFile<<users.pNumber<<endl;
 }
 
-void emailReg()
+void emailReg()    // Creating a new email for the registration
 {
     string email;
     cout<<"Please enter your email address: \n";
@@ -173,7 +173,7 @@ void emailReg()
     users.email = email;
 }
 
-void Username()
+void Username()    // Creating a new username and phone number for the registration
 {
     string username;
     regex un ("([a-zA-Z]{3,}[_]*)");
@@ -202,7 +202,7 @@ void Username()
 
 }
 
-void changepass()
+void changepass()   // Making the user to change their password
 {
     string newpass, oldpass, confirmpass, encryptedpass;
     fstream userFile;
@@ -238,7 +238,7 @@ void changepass()
     }
 }
 
-void login()
+void login()    // Making the user to log in the app
 {
     string name, pass, line, encryptedpass = "";
     fstream userFile;
