@@ -1,14 +1,23 @@
+
+// FCAI – Programming 1 – 2022 - Assignment 4
+// Program Name: Login-App.cpp
+// Last Modification Date: 5/17/2022
+// Author1 and ID and Group: Abdelrahman Ashraf El-Sayed Abdalla    20210199    Group A
+// Author2 and ID and Group: Aly Walaa El-Deen Yehia    20210250    Group A
+// Author3 and ID and Group: Omar Amer Ahmed    20210267    Group A
+// Teaching Assistant: Yousra
+// Purpose: Creating a Login App
+
 #include <iostream>
 #include <regex>
 #include <string>
 #include <conio.h>
 #include <vector>
-#include <map>
 #include <fstream>
 using namespace std;
 
 
-struct data
+struct data    // Creating a struct to store users information
 {
     string username;
     string email;
@@ -24,7 +33,7 @@ void createPass();
 void storeInfo();
 void changepass();
 void login();
-//--------------------------------------------------------
+//-------------------------------------------------------------------
 
 
 int main()
@@ -39,15 +48,6 @@ int main()
     cout << "4- Exit \n";
 
     cin >> choice;
-
-    /*   if (choice == 1)
-       {
-           emailReg();
-           createPass();
-           Username();
-           storeInfo();
-           cout << "Registration completed :)" << endl;
-       } */
 
     switch(choice)
     {
@@ -144,7 +144,6 @@ void createPass()
             }
             break;
         }
-
     }
 }
 
@@ -153,7 +152,6 @@ void storeInfo()
     fstream userFile;
     userFile.open("userdata.txt",ios::in | ios::out | ios::app);
 
-    userFile<<endl;
     userFile<<users.email<<endl;
     userFile<<users.password<<endl;
     userFile<<users.username<<endl;
@@ -206,49 +204,43 @@ void Username()
 
 void changepass()
 {
-    string newpass, oldpass, temp = "Abc123()", confirmpass;
-    cout << "Please enter the old password: " << endl;
-    while (true)
+    string newpass, oldpass, confirmpass, encryptedpass;
+    fstream userFile;
+    userFile.open("userdata.txt", ios::in);
+
+    while(!userFile.eof())
     {
+        getline(userFile, users.email);
+        getline(userFile, users.password);
+        getline(userFile, users.username);
+        getline(userFile, users.pNumber);
+
+        uservector.push_back(users);
+    }
+
+    cout << "Please enter the old password: " << endl;
+    while (true) {
         cin >> oldpass;
-        if (oldpass == temp)
-        {
-            cin.sync();
-            cin.clear();
-
-            cout << "Please enter a new strong password: " << endl;
-            cin >> newpass;
-
-            regex pass ("(?=.[a-z])(?=.[0-9])(?=.[A-Z])(?=.[!@#$%^&_+=-?.])[a-zA-Z0-9!@#$%^&_+=-?.]{8,}");
-            while (!regex_match(newpass,pass))
-            {
-                cout<<"Password is not strong enough.. Please enter a new one: \n";
-                newpass.clear();
-                cin >> newpass;
-            }
-
-            newpass.clear();
-            cout << "Please enter the password again to confirm: " << endl;
-            cin >> confirmpass;
-            while (confirmpass != newpass) {
-                cout << "Passwords don't match." << endl;
-                cout << "Please confirm the password again: " << endl;
-                confirmpass.clear();
-                cin >> confirmpass;
-            }
-            cout << "Password changed successfully :)" << endl;
-            break;
+        for (char i: oldpass) {
+            encryptedpass += char(int(i) + 1);
         }
-        else
-            cout << "Please enter your old password correctly:" << endl;
+        for (data users: uservector) {
+            if (encryptedpass == users.password) {
+                createPass();
+                storeInfo();
+                break;
+            }
+            else {
+                cout << "Passwords dont match." << endl;
+                break;
+            }
+        }
     }
 }
 
 void login()
 {
     string name, pass, line, encryptedpass = "";
-    int counter = 0;
-    char c;
     fstream userFile;
     userFile.open("userdata.txt",ios::in | ios::out | ios::app);
 
@@ -266,41 +258,25 @@ void login()
     {
         cout << "Please enter your username: " << endl;
         cin >> name;
-
-        while(name != users.username && counter < 2)
-        {
-            cout<<"User name was not found Please try again: \n";
-            cin>>name;
-            counter++;
-        }
-        if(counter == 2)
-        {
-            cout<<"No more chances left\n";
-            break;
-        }
-        cout<<"Please enter your password: \n";
-        cin>>pass;
-        for(char i : pass)
-        {
-            encryptedpass += char(int(i)+1);
-        }
-        while(encryptedpass != users.password && counter < 2)
-        {
-            cout<<"Password is not correct..Please try again: \n";
-            cin>>pass;
-            for(char i : pass)
-            {
-                encryptedpass += char(int(i)+1);
+        for(data users: uservector) {
+            while (name != users.username) {
+                cout << "User name was not found Please try again: \n";
+                cin >> name;
             }
-            counter++;
-        }
-        if(counter == 2)
-        {
-            cout<<"No more chances left\n";
+            cout << "Please enter your password: \n";
+            cin >> pass;
+            for (char i: pass) {
+                encryptedpass += char(int(i) + 1);
+            }
+            while (encryptedpass != users.password) {
+                cout << "Password is not correct..Please try again: \n";
+                cin >> pass;
+                for (char i: pass) {
+                    encryptedpass += char(int(i) + 1);
+                }
+            }
+            cout << "Logged in successfully \n";
             break;
         }
-        cout<<"Logged in successfully \n";
-        break;
     }
 }
-
